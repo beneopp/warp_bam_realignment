@@ -118,25 +118,6 @@ workflow ExomeGermlineSingleSample {
       agg_preemptible_tries = papi_settings.agg_preemptible_tries
   }
 
-  call ToGvcf.VariantCalling as BamToGvcf {
-    input:
-      calling_interval_list = references.calling_interval_list,
-      evaluation_interval_list = references.evaluation_interval_list,
-      haplotype_scatter_count = scatter_settings.haplotype_scatter_count,
-      break_bands_at_multiples_of = scatter_settings.break_bands_at_multiples_of,
-      contamination = UnmappedBamToAlignedBam.contamination,
-      input_bam = UnmappedBamToAlignedBam.output_bam,
-      input_bam_index = UnmappedBamToAlignedBam.output_bam_index,
-      ref_fasta = references.reference_fasta.ref_fasta,
-      ref_fasta_index = references.reference_fasta.ref_fasta_index,
-      ref_dict = references.reference_fasta.ref_dict,
-      dbsnp_vcf = references.dbsnp_vcf,
-      dbsnp_vcf_index = references.dbsnp_vcf_index,
-      base_file_name = sample_and_unmapped_bams.base_file_name,
-      final_vcf_base_name = final_gvcf_base_name,
-      agg_preemptible_tries = papi_settings.agg_preemptible_tries
-  }
-
   call QC.CollectHsMetrics as CollectHsMetrics {
     input:
       input_bam = UnmappedBamToAlignedBam.output_bam,
@@ -193,9 +174,6 @@ workflow ExomeGermlineSingleSample {
     File duplicate_metrics = UnmappedBamToAlignedBam.duplicate_metrics
     File? output_bqsr_reports = UnmappedBamToAlignedBam.output_bqsr_reports
 
-    File gvcf_summary_metrics = BamToGvcf.vcf_summary_metrics
-    File gvcf_detail_metrics = BamToGvcf.vcf_detail_metrics
-
     File hybrid_selection_metrics = CollectHsMetrics.metrics
 
     File? output_bam = provided_output_bam
@@ -206,9 +184,6 @@ workflow ExomeGermlineSingleSample {
     File output_cram_md5 = BamToCram.output_cram_md5
 
     File validate_cram_file_report = BamToCram.validate_cram_file_report
-
-    File output_vcf = BamToGvcf.output_vcf
-    File output_vcf_index = BamToGvcf.output_vcf_index
   }
   meta {
     allowNestedInputs: true
