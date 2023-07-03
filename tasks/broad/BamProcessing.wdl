@@ -249,7 +249,7 @@ task GatherBqsrReports {
   }
 
   command {
-    gatk --java-options "-Xms3000m -Xmx3000m" \
+    gatk --java-options "-Xms6000m -Xmx6000m" \
       GatherBQSRReports \
       -I ~{sep=' -I ' input_bqsr_reports} \
       -O ~{output_report_filename}
@@ -257,7 +257,7 @@ task GatherBqsrReports {
   runtime {
     docker: gatk_docker
     preemptible: preemptible_tries
-    memory: "3500 MiB"
+    memory: "7000 MiB"
     bootDiskSizeGb: 15
     disks: "local-disk 20 HDD"
   }
